@@ -1,6 +1,7 @@
 package com.groupeisi.m2gl.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.groupeisi.m2gl.config.Constants;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -8,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -56,6 +58,25 @@ public class User extends AbstractAuditingEntity<String> implements Serializable
     @Size(max = 256)
     @Column(name = "image_url", length = 256)
     private String imageUrl;
+
+    @Size(max = 20)
+    @Column(name = "telephone", length = 20, unique = true)
+    private String telephone;
+
+    @Size(max = 50)
+    @Column(name = "nin", length = 50, unique = true)
+    private String nin;
+
+    @Column(name = "date_naissance")
+    private LocalDate dateNaissance;
+
+    @JsonIgnore
+    @Column(name = "password", length = 255)
+    private String password;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties(value = { "user" }, allowSetters = true)
+    private Compte compte;
 
     @JsonIgnore
     @ManyToMany
@@ -138,6 +159,46 @@ public class User extends AbstractAuditingEntity<String> implements Serializable
 
     public void setAuthorities(Set<Authority> authorities) {
         this.authorities = authorities;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public String getNin() {
+        return nin;
+    }
+
+    public void setNin(String nin) {
+        this.nin = nin;
+    }
+
+    public LocalDate getDateNaissance() {
+        return dateNaissance;
+    }
+
+    public void setDateNaissance(LocalDate dateNaissance) {
+        this.dateNaissance = dateNaissance;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Compte getCompte() {
+        return compte;
+    }
+
+    public void setCompte(Compte compte) {
+        this.compte = compte;
     }
 
     @Override

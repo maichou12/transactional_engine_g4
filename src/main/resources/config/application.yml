@@ -210,7 +210,7 @@ server:
         http-only: true
 
 springdoc:
-  show-actuator: true
+  show-actuator: false
 
 # Properties to be exposed on the /info management endpoint
 info:

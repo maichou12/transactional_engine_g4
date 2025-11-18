@@ -19,6 +19,10 @@
     <property name="timeType" value="time(6)" dbms="mysql"/>
 
     <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000003_add_user_fields.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000004_create_compte.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000005_create_transfert.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000006_create_details_transaction.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
