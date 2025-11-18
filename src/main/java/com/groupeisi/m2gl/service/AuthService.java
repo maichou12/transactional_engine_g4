@@ -210,6 +210,24 @@ public class AuthService {
     }
 
     /**
+     * Déconnecte un utilisateur.
+     * Note: Avec JWT stateless, il n'y a pas de session à invalider côté serveur.
+     * Le token reste valide jusqu'à son expiration. Cette méthode sert principalement
+     * à logger la déconnexion et à permettre au client de nettoyer ses données locales.
+     *
+     * @param userId l'identifiant de l'utilisateur
+     */
+    public void logout(String userId) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            log.info("Utilisateur déconnecté : {} ({})", user.getTelephone(), userId);
+        } else {
+            log.warn("Tentative de déconnexion pour un utilisateur inexistant : {}", userId);
+        }
+    }
+
+    /**
      * Génère un numéro de compte unique.
      */
     private String generateNumCompte() {

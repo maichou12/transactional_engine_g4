@@ -58,14 +58,20 @@ public class AuthResource {
     )
     @PostMapping("/inscription/etape1")
     public ResponseEntity<OtpResponseDTO> inscriptionEtape1(@Valid @RequestBody InscriptionEtape1DTO dto) {
-        log.debug("REST request pour envoyer un code OTP : {}", dto.getTelephone());
+        log.info("═══════════════════════════════════════════════════════════");
+        log.info("📱 [INSCRIPTION ETAPE 1] Requête reçue");
+        log.info("📱 [INSCRIPTION ETAPE 1] Téléphone reçu : '{}'", dto.getTelephone());
+        log.info("📱 [INSCRIPTION ETAPE 1] Longueur : {}", dto.getTelephone() != null ? dto.getTelephone().length() : 0);
+        log.info("📱 [INSCRIPTION ETAPE 1] Commence par '+' : {}", dto.getTelephone() != null && dto.getTelephone().startsWith("+"));
+        log.info("═══════════════════════════════════════════════════════════");
 
         try {
             otpService.generateAndSendOtp(dto.getTelephone());
+            log.info("✅ [INSCRIPTION ETAPE 1] Code OTP généré et envoyé pour : {}", dto.getTelephone());
             // En production, ne pas retourner le code OTP
             return ResponseEntity.ok(new OtpResponseDTO("Code OTP envoyé avec succès", true));
         } catch (Exception e) {
-            log.error("Erreur lors de l'envoi du code OTP", e);
+            log.error("❌ [INSCRIPTION ETAPE 1] Erreur lors de l'envoi du code OTP", e);
             throw new BadRequestAlertException("Erreur lors de l'envoi du code OTP", ENTITY_NAME, "otpsendfailed");
         }
     }
@@ -241,6 +247,42 @@ public class AuthResource {
         } catch (RuntimeException e) {
             log.error("Erreur lors de l'authentification", e);
             throw new BadRequestAlertException(e.getMessage(), ENTITY_NAME, "authenticationfailed");
+        }
+    }
+
+    /**
+     * POST /api/auth/logout : Déconnecte un utilisateur.
+     *
+     * @param userId l'identifiant de l'utilisateur (optionnel, peut être extrait du token)
+     * @return le résultat de la déconnexion
+     */
+    @Operation(
+        summary = "Déconnexion",
+        description = "Déconnecte un utilisateur. Le token JWT reste techniquement valide jusqu'à son expiration, " +
+        "mais cette méthode permet de logger la déconnexion et au client de nettoyer ses données locales."
+    )
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Déconnexion réussie",
+                content = @Content(schema = @Schema(implementation = com.groupeisi.m2gl.service.dto.LogoutResponseDTO.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Requête invalide"),
+        }
+    )
+    @PostMapping("/logout")
+    public ResponseEntity<com.groupeisi.m2gl.service.dto.LogoutResponseDTO> logout(@RequestParam(required = false) String userId) {
+        log.info("REST request pour déconnecter un utilisateur : {}", userId);
+
+        try {
+            if (userId != null && !userId.isEmpty()) {
+                authService.logout(userId);
+            }
+            return ResponseEntity.ok(new com.groupeisi.m2gl.service.dto.LogoutResponseDTO("Déconnexion réussie", true));
+        } catch (Exception e) {
+            log.error("Erreur lors de la déconnexion", e);
+            return ResponseEntity.ok(new com.groupeisi.m2gl.service.dto.LogoutResponseDTO("Déconnexion effectuée", true));
         }
     }
 }

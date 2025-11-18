@@ -80,6 +80,7 @@ spring:
 
 server:
   port: 9089
+  address: 0.0.0.0 # Écouter sur toutes les interfaces pour permettre les connexions depuis l'émulateur
   # make sure requests the proxy uri instead of the server one
   forward-headers-strategy: native
 
@@ -103,15 +104,14 @@ springdoc:
 jhipster:
   registry:
     password: admin
-  # CORS is disabled by default on microservices, as you should access them through a gateway.
-  # If you want to enable it, please uncomment the configuration below.
-  # cors:
-  #   allowed-origins: "http://localhost:9000,https://localhost:9000"
-  #   allowed-methods: "*"
-  #   allowed-headers: "*"
-  #   exposed-headers: "Authorization,Link,X-Total-Count"
-  #   allow-credentials: true
-  #   max-age: 1800
+  # CORS configuration pour permettre les appels depuis le frontend mobile
+  cors:
+    allowed-origins: '*' # En production, spécifier les origines exactes
+    allowed-methods: '*'
+    allowed-headers: '*'
+    exposed-headers: 'Authorization,Link,X-Total-Count'
+    allow-credentials: true
+    max-age: 1800
   logging:
     use-json-format: false # By default, logs are not in Json format
     logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
